@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>InstanceMode</title>
+    <link rel="stylesheet" href="css/style.css" >
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300' rel='stylesheet' type='text/css'>
+    <script src="libraries/p5.js" type="text/javascript"></script>
+    <script src="libraries/p5.dom.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+   
+		<!--script type="text/javascript" src="easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="easyui/easyui-lang-zh_CN.js"></script-->
+		<script type="text/javascript" src="js/jquery.form.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+
+    <script src="js/swap.js"></script>
+		<script src="js/qlearning.js"></script>
+    <script src="js/matlib.js"></script>
+ 
+
+    
+
+
+
+
+		<!--link rel="stylesheet" type="text/css" href="easyui/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="easyui/icon.css" /-->
+    <!--style> body {padding: 0; margin: 0;} canvas {vertical-align: top;margin-left: 50px;} </style-->
+
+
+
+  </head>
+
+
+
+  <body>
+
+<div id="wrapper">
+
+
+<div class="header">
+    <img src="img/head.png">
+    <h1 style="margin-left: 12% ; margin-top: -5%">QUBE - Game Designer AI Tool</h1>
+</div>
+
+<div class="topnav">
+ 
+       <input type="image" id="again" src="img/again.png" onclick="again()" />
+       <input type="image" id="start" src="img/start.png" onclick="start()"/>
+       <input type="image" id="stop" style="display: none" src="img/pause.png" onclick="stop()"/>
+      
+
+       <p id="frameratetext1">Fast</p>
+
+       <div class="slidecontainer"> 
+      <input type="range" min="1" max="1000" value="1" class="slider" id="myRange">
+       </div>
+
+        
+       <p id="frameratetext2">Slow</p>
+
+
+
+        </p>
+        <span id="introduction" class="introductiontext"  style="display: none;"></span>
+        <span id="introductionsnap" class="introductiontext"  style="display: none;"></span>
+</div>
+
+
+
+<div class="row">
+    <div class="column side">
+      <div id="mazeva"> 
+
+      <h2><img src="img/maze.png" style=" width: 60px;
+    height: 60px; align: center;vertical-align: middle;">Maze</h2>
+
+<!--
+     <p> <img src="img/wall.png" style=" width: 60px; height: 60px; align: center;vertical-align: middle; margin-left: -1px; margin-top: 1px;">   
+    <!Rounded switch -->
+  <!--    <label class="switch" style="margin-left:3px;  align: center;vertical-align: middle">
+     <input type="checkbox" id="wallcheck"  onclick="checkboxfunc()">
+    <span class="sliderwall round"></span>
+
+     </label>
+       
+       <img id="tooltipwall" src="img/help.png" class="imgs" style="width: 32px; height: 32px; vertical-align: middle; margin-top: 0px; margin-left: 8px; ">
+
+      <span id="tooltiptextwall">Set obstacles where the agent (Q-learning algorithm) can't pass</span>
+      </p>   -->
+
+
+       <!--  <p > <img src="img/pit.png" style=" width: 53px;
+          height: 53px; align: center;vertical-align: middle;"> 
+    <! Rounded switch -->
+     <!--   <label class="switch" style="margin-left:7px;  align: center;vertical-align: middle">
+        <input type="checkbox" id="pitcheck" onclick="checkboxfunc()">
+         <span class="sliderwall round"></span>
+       </label>
+
+        <img id="tooltippit" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; vertical-align: middle;margin-top: 0px; margin-left: 8px;">
+         <span id="tooltiptextpit">Set the ghost position, and the agent (Q-learning algorithm) will get punished (negative reward) if meet them</span>
+         </p> -->
+
+        <p  style="color: #60626C">Punishment value:
+        <!--input type="number" id="pitvalue" value="-1" max="-0.5"  step="0.5"   style="width: 50px;"  /-->
+
+         <select id="pitvalue" class="option-input option-menu">
+       <option value="-1" selected>-1</option>
+       <option value="-3" >-3</option>
+          <option value="-5">-5</option>
+            <option value="-10" >-10</option>
+       <option value="-30" >-30</option>
+          <option value="-100">-100</option>
+  
+      </select>
+        
+       </p>
+
+
+       <img id="tooltippitvalue" src="img/help.png"  class="imgs" style="position:absolute; width: 32px; height: 32px; vertical-align: middle; margin-top: -65px; margin-left: 200px; ">
+
+      <span id="tooltiptextpitvalue">The negative value the agent (Q-learning algorithm) will receive if meet the ghost</span>
+         
+       <p  style="color: #60626C; margin-top:-20px">Range of movement:
+       <select id="pitrange" class="option-input option-menu">
+       <option value="0" >0</option>
+       <option value="3" selected>3</option>
+          <option value="5">5</option>
+      </select>
+
+      </p>
+
+        <img id="tooltippitrange" src="img/help.png"  class="imgs"  style="position:absolute; width: 32px; height: 32px; vertical-align: middle; margin-top: -65px; margin-left: 200px; ">
+
+      <span id="tooltiptextpitrange">The ghost moves randomly within this range based on the position you set</span>
+       
+<!--
+     <p  style="margin-top: -9px;"><img src="img/startposition.png" style="width:55px; height: 55px;align: center;vertical-align: middle;">  
+    <!- Rounded switch -->
+<!--    <input type="checkbox" id="startcheck" >
+    <span class="sliderwall round"></span>
+    </label>
+     <img id="tooltipstart" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; vertical-align: middle; margin-top: 0px; margin-left: 8px;">
+      <span id="tooltiptextstart">Set the start position</span>
+    </p>
+
+
+    <p  ><img src="img/goal.png" style="width:47px; height: 55px;align: center;vertical-align: middle; margin-left: 6px;">   
+    <! Rounded switch -->
+ <!--   
+<label class="switch" id="goalchecklable" style="margin-left:7px;  align: center;vertical-align: middle">
+  <input type="checkbox" id="goalcheck" >
+  <span class="sliderwall round"></span>
+</label>
+ <img id="tooltipgoal" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px;vertical-align: middle; margin-top: 0px; margin-left: 8px;">
+<span id="tooltiptextgoal">Set the goal (end) position</span>
+   </p>-->
+
+
+   <p  style="color: #60626C; margin-top: -15%">Goal reward:
+        <!--input type="number" id="pitvalue" value="-1" max="-0.5"  step="0.5"   style="width: 50px;"  /-->
+
+         <select id="goalvalue" class="option-input option-menu">
+             <option value="1000">1000</option>
+          <option value="100">100</option>
+           <option value="30" >30</option>
+<option value="10" >10</option>
+           <option value="7">7</option>
+ <option value="5">5</option>
+          <option value="3" >3</option>
+       <option value="1" selected>1</option>
+      
+              
+      </select>
+         
+
+         
+</p>
+
+
+       <img id="tooltipgoalvalue" src="img/help.png"  class="imgs"  style="position:absolute; width: 32px; height: 32px; vertical-align: middle; margin-top: -65px; margin-left: 200px; ">
+
+      <span id="tooltiptextgoalvalue">The positive reward the agent (Q-learnig algorithm) receives for finding the goal</span>
+       
+
+      </div>
+       
+<hr id="hr1"></hr>
+
+      <div id="agentva">
+      <h2><img src="img/agent.png" style=" width: 50px;
+    height: 50px;  align: center;vertical-align: middle;"> Agent</h2>
+
+       <p style="color: #60626C" >Discount factor γ:
+
+         <select id="gamma" class="option-input option-menu">
+       <option value="1" >1</option>
+          <option value="0.98">0.98</option>
+            <option value="0.96">0.96</option>
+          <option value="0.94">0.94</option>
+        <option value="0.92">0.92</option>
+       <option value="0.9" selected>0.9</option>
+         
+      </select>
+    
+  </p> 
+
+  <img id="tooltipdisrate" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; position: absolute; margin-top: -69px; margin-left: 200px;">
+       
+   <span id="tooltiptextdisrate">It quantifies how much importance the algorithm give for future rewards. The lower the value is, the agent will tend to consider only immediate rewards</span>
+      
+
+
+   <p style="color: #60626C; margin-top: -20px;" >Learning Rate  α :
+
+    <select id="learn" class="option-input option-menu">
+       <option value="1" >1</option>
+       <option value="0.9" >0.9</option>
+          <option value="0.8">0.8</option>
+            <option value="0.7" >0.7</option>
+       <option value="0.6" >0.6</option>
+         <option value="0.5" selected>0.5</option>
+      </select>
+    </p>
+
+    <img id="tooltiplearn" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; position: absolute; margin-top: -69px; margin-left: 200px;">
+
+    <span id="tooltiptextlearn">Learning rate tells the magnitude of step that is taken towards the goal. The higher the value is, the larger extent the newly acquired information overrides old information</span>
+     
+        <!--p>Greedy Probability:<input type="number" id="epsilon"  value="0.05"  style="width: 50px;"  /></p-->
+      </div>
+
+  <hr id="hr2"></hr>
+      <div id="mablib">
+
+        <p style="color: #60626C; width: 17%;font-size: 13px; line-height: 15px;">   
+        Our Level <a  id="punishment_value" style="text-decoration: underline;">moderately</a> punishes the agent for encountering ghosts which means they learn to avoid them <a  id="punishment_value_2" style="text-decoration: underline;">moderately quick</a>. Your ghosts are moving in a <a  id="rangmove_value" style="text-decoration: underline;">large</a> area. It also gives a <a  id="goalreward_value" style="text-decoration: underline;">moderate low</a> reward for reaching the goal which motivates your agent to move <a  id="goalreward_value_2" style="text-decoration: underline;">slightly slow</a>. </p>
+
+        <p style="color: #60626C; width: 17%;font-size: 13px;line-height: 15px;"> 
+        Your agent values <a  id="discountfactor_value" style="text-decoration: underline;">immediate</a> rewards and will do better with <a  id="discountfactor_value_2" style="text-decoration: underline;">closer</a> goals. It also <a  id="learningrate_value" style="text-decoration: underline;">disregards</a> previous attempts to reach the goal <a  id="learningrate_value_2" style="text-decoration: underline;">quicker</a>.
+        </p>
+        
+      </div>
+      
+
+  </div><!-- column side -->
+
+
+ 
+      <div class="column middle" id="screenshot"> 
+<span id="popup" class="tooltiptext"  style="display: none;"></span>
+<span id="popupformeet" class="tooltiptext"  style="display: none;"></span>
+
+
+
+<!-- top switch-->
+<p style="margin-left: 90px; margin-top: -60px;"> 
+	<img src="img/wall.png" style=" width: 60px; height: 60px; align: center;vertical-align: middle; margin-left: -1px; margin-top: 1px;">   
+    <!-- Rounded switch -->
+      <label class="switch" style="margin-left:-1px;  align: center;vertical-align: middle">
+     <input type="checkbox" id="wallcheck"  onclick="checkboxfunc()">
+    <span class="sliderwall round"></span>
+
+     </label>
+       
+       <!--img id="tooltipwall" src="img/help.png" class="imgs" style="width: 32px; height: 32px; vertical-align: middle; margin-top: 0px; margin-left: 0px; "-->
+
+      <span id="tooltiptextwall">Set obstacles where the agent (Q-learning algorithm) can't pass</span>
+      
+
+
+
+    <img src="img/pit.png" style=" width: 53px;
+          height: 53px; align: center;vertical-align: middle;"> 
+    <!-- Rounded switch -->
+        <label class="switch" style="margin-left:-1px;  align: center;vertical-align: middle">
+        <input type="checkbox" id="pitcheck" onclick="checkboxfunc()">
+         <span class="sliderwall round"></span>
+       </label>
+
+        <!--img id="tooltippit" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; vertical-align: middle;margin-top: 0px; margin-left: 0px;"-->
+         <span id="tooltiptextpit">Set the ghost position, and the agent (Q-learning algorithm) will get punished (negative reward) if meet them</span>
+
+
+
+    <img src="img/startposition.png" style="width:55px; height: 55px;align: center;vertical-align: middle;">  
+    <!-- Rounded switch -->
+    <label class="switch" id="startchecklable" style="margin-left:-1px;  align: center;vertical-align: middle">
+    <input type="checkbox" id="startcheck" >
+    <span class="sliderwall round"></span>
+    </label>
+     <!--img id="tooltipstart" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px; vertical-align: middle; margin-top: 0px; margin-left: 0px;"-->
+      <span id="tooltiptextstart">Set the start position</span>
+   
+
+
+    <img src="img/goal.png" style="width:47px; height: 55px;align: center;vertical-align: middle; margin-left: 6px;">   
+    <!-- Rounded switch -->
+<label class="switch" id="goalchecklable" style="margin-left:-1px;  align: center;vertical-align: middle">
+  <input type="checkbox" id="goalcheck" >
+  <span class="sliderwall round"></span>
+</label>
+ <!--img id="tooltipgoal" src="img/help.png"  class="imgs"  style="width: 32px; height: 32px;vertical-align: middle; margin-top: 0px; margin-left: 0px;"-->
+<span id="tooltiptextgoal">Set the goal (end) position</span>
+   
+
+
+
+  </p>
+
+
+
+
+         <!--img src="img/1.png" style="position: absolute; margin-left: 120px; margin-top: -70px; width: 450px; height: auto;"-->
+
+    <img  id="meetg" src="img/meetg.png" style="width: 50px; height: 50px; position: absolute;  z-index: 1; display: none;">
+
+    <img  id="findg" src="img/findg.png" style="width: 50px; height: 50px; position: absolute;  z-index: 1; display: none;">
+   
+     <button type="button" id="maze" class="action-button shadow"  onclick="SwapDivsWithClick('MyCanvas','Qtable')">Maze</button>
+     <button type="button" id="tale" class="action-button shadow" onclick="SwapDivsWithClick('Qtable','MyCanvas')">Q Table</button>
+
+
+      <div id="MyCanvas" style="display:block;"></div>
+      <div id="Qtable"  style="display:none;"></div>
+  <canvas id="FinalPath"  width="501" height="505"></canvas>
+    <!--canvas id="DrawImg"  width="501" height="505"></canvas-->
+    <img src="img/ge.png" id="imgge" style="position: absolute; margin-left: 608px; margin-top: -23px; width: 126px; height: auto;">
+
+  <!--span id="totaltime">Totaltime</span-->
+      </div><!-- column middle -->
+
+       <div class="column side right" id="scrollbar">
+         <button id="snapshoticon" onclick="takeScreenShot()"  class="action-button shadow" >Snapshot</button>
+        <div id="snapshot">
+       
+
+            </div>
+
+       </div><!-- column side -->
+
+
+</div><!-- row -->
+
+<!--a href="#footintroduction" id="arrow-down" style="position: absolute;
+    margin-left: 50%; margin-top:-1.7%;"> </a>
+
+
+
+  
+  <div class="footer" >
+
+     <div id="footintroduction">
+    <h2  style="color: #60626C; font-size:24px;  font-family: Helvetica, Arial, sans-serif;">  Huh… What’s this for? </h2>
+    <p  style="color: #60626C; font-size:16px;  font-family: Helvetica, Arial, sans-serif; ">This is a front-end based interactive visualization tool. The goal is to facilitate game designers design with machine learning. Designers can build a quick intuition about Reinforcement Q Learning and use the result in the creation of game levels.</p>
+
+
+    <h2  style="color: #60626C;font-size:22px;  font-family: Helvetica, Arial, sans-serif;">What is Reinforcement Q Learning?</h2>
+    <p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">Reinforcement learning is learning what to do, given a situation and a set of possible actions to choose from, in order to maximize a reward. The learner, which we will call <a>agent</a>, is not told what to do -- it must discover this by itself through interacting with the environment. To better understand what reinforcement Q-Learning is, let's see an example:</p>
+
+     <h2  style="color: #60626C; font-size:20px; font-family: Helvetica, Arial, sans-serif;">Let’s put a robot in a maze</h2>
+
+     <p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">Say you are playing a game where a robot <img src="img/agent.png" style=" width: 35px;
+    height: 35px; align: center;vertical-align: middle; margin-top: 2px; "> is seeking the final goal of a flag <img src="img/goal.png" style=" width: 35px;
+    height: 35px; align: center;vertical-align: middle; margin-top: 2px;"> at the end of the maze. Meanwhile, the robot needs to avoid locations of ghosts <img src="img/pit.png" style=" width: 35px;
+    height: 35px; align: center;vertical-align: middle; margin-top: 2px;">, if it lands in the same position, you die. </p>
+
+    <img src="img/intro1.png" style="width: 250px; height: 250px; margin-left: 32%; margin-top: 5px;">
+
+   <p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">
+This can be evaluated using a “points scoring” system.</p>
+<ul style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">
+  <li>You lose -0.04 at each step. (losing points at each stage helps our robot find the flag by the fastest route possible)</li>
+  <li>If you touch the ghost <img src="img/meetg.png" style=" width: 35px;
+    height: 35px; align: center;vertical-align: middle; margin-top: -2px;margin-left: -2px; ">, you lose -1 points (Punishment Value) and the episode ends.</li>
+  <li>If you find the flag  <img src="img/findg.png" style=" width: 35px;
+    height: 35px; align: center;vertical-align: middle; margin-top: -2px;margin-left: -2px; "> you win, you get +1 (Goal Reward) points.</li>
+</ul>
+
+
+<p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">The question is: how do you create an agent (robot) that will be able to do that?</p>
+
+<p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">The first strategy is like this: Let's put the maze on a tile map, and our agent (robot) tries to go to each tile, and then colors each tile. Blue for “safe,” and red for "dangerous."</p>
+
+
+<p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">Then, we can tell our agent to take only blue tiles.</p>
+
+
+<img src="img/intro2.png" style="width: 200px; height: 200px; margin-left: 35%; margin-top: 5px;">
+
+
+<p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">But the problem is that the agent doesn't know which tile to take when blue tiles are next to each other. The agent will lose because it can’t find the flag. Thus we use Q table to help agent memorize the route.</p>
+
+
+
+<h2  style="color: #60626C;font-size:20px;  font-family: Helvetica, Arial, sans-serif;">Introducing the Q-table</h2>
+
+<p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">We improve the first strategy of finding out the path by creating a table where the agent remembers the expected future reward, for each movement (action) at each tile (state). </p>
+
+<p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">Each state (tile) allows four possible actions. These are moving left, right, up, or down. Regarding computation, we overlap the tile map with a table, and this is called Q table. </p>
+
+<p  style="color: #60626C;font-size:16px; font-family: Helvetica, Arial, sans-serif;">The columns will be the four actions (left, right, up, down). The rows will be the states. Each Q-table score will be the maximum expected future reward that it will get if it take that action in that state with the best reward given.</p>
+
+<img src="img/intro4.png" style="width: 600px; height: 250px; margin-left: 5%; margin-top: 5px;">
+
+
+<p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">Based on this Q table,  we know for each state what’s the best action to take, by finding the highest score in that grid. Yeah! We solved the castle problem! But wait... How do we calculate the values for each score of the Q table? </p>
+
+
+<p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">That's why we need to use the  <a href="http://mnemstudio.org/path-finding-q-learning-tutorial.htm">Q learning algorithm</a>. This equation, known as the Bellman equation, helps calculate values for each score of the Q table. It combines the reward the agent receives for entering the current state S plus the maximum future reward for the next state S′. </p>
+
+
+<img src="img/qlearing.png" style="width: 650px; height: 80px; margin-left: 2%; margin-top: 5px;">
+
+<p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">
+<a>α</a> is the <a>learning rate</a> that controls how much the difference between previous and new Q value is considered. The <a>discount factor γ</a> determines the importance of future rewards. It varies from 0 to 1. If closer to 0, the agent will tend to consider only immediate rewards. If closer to 1, the agent will consider future rewards with greater weight, willing to delay the reward. Based on experience, researchers usually choose 0.9.</p>
+
+
+<p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">In this tool, at the beginning of the learning process, the agent generates a Q table with all values equal to 0. As the agent explores the maze, the agent gets feedback by punishment value, goal reward and empty space. The positive feedback is <a style="color: red">red</a>, and negative feedback is <a style="color: blue"> blue</a>. The overlapping transparency indicates the overlay times. </p>
+
+    <h2  style="color: #60626C;  font-size:22px;font-family: Helvetica, Arial, sans-serif;">How can the result been used in game level design?</h2>
+    <p  style="color: #60626C; font-size:16px; font-family: Helvetica, Arial, sans-serif;">Level design is complicated. Imagine that you are a game designer who is making a first person shooter game. In this game, you need to create a maze with impassable obstacles, killer ghosts, and a start and an end. How will you set the layout for different levels? How will you know the exact difficulty to define a level? What’s the most optimal path, so I can design around that experience?</p>
+    <p  style="color: #60626C; font-size:16px;font-family: Helvetica, Arial, sans-serif;">To answer these questions, you can just experiment in this tool. The agent will act as a player that walk arounds, finds the most optimal path, and tracks how long it took. You can take a snapshot of each layout and compare them to decide the game levels.</p>
+    
+
+
+
+
+</div>
+
+   
+
+
+   </div-->
+
+</div>
+  </body>
+</html>
+
+    
